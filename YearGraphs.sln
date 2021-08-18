@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "YearGraphs", "YearGraphs\YearGraphs.fsproj", "{C10C41D6-42F7-4B31-9ED1-902509D9E1A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C10C41D6-42F7-4B31-9ED1-902509D9E1A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10C41D6-42F7-4B31-9ED1-902509D9E1A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10C41D6-42F7-4B31-9ED1-902509D9E1A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10C41D6-42F7-4B31-9ED1-902509D9E1A2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,5 +1,5 @@
-﻿open System
-open Argu
+﻿open Argu
+open System
 open System.IO
 open YearGraphs
 open YearGraphs.Arguments
@@ -42,9 +42,9 @@ let main (argv: string array) =
                 1
             | Ok file ->
                 let nl = Environment.NewLine
-                logDebug ($"Executing application with following parameters:{nl}" +
-                          $"Excel path: {file.FullName}{nl}" +
-                          $"Result directory: {workingDirectory}")
+                logDebug ("Executing application with following parameters: " +
+                          $"Excel path: {file.FullName}; " +
+                          $"Result directory: {workingDirectory}.")
                 ExcelParser.parseExcel file
         with ex ->
             logError ex.Message

@@ -1,9 +1,9 @@
 module YearGraphs.ExcelParser
 
-open Log
 open OfficeOpenXml
 open System.IO
-open Utils
+open YearGraphs.Log
+open YearGraphs.Utils
 
 let private getSummaryColumnNumbers (worksheet: ExcelWorksheet)
                                     (fileDimensions: ExcelCellAddress * ExcelCellAddress)

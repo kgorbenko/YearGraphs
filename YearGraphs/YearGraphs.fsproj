@@ -7,13 +7,16 @@
 
   <ItemGroup>
     <Compile Include="Common.fs" />
+    <Compile Include="Utils.fs" />
     <Compile Include="Log.fs" />
     <Compile Include="Arguments.fs" />
+    <Compile Include="ExcelParser.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Argu" Version="6.1.1" />
+    <PackageReference Include="EPPlus" Version="5.7.3" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />

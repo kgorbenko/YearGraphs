@@ -1,6 +1,7 @@
 ﻿open System
 open Argu
 open System.IO
+open YearGraphs
 open YearGraphs.Arguments
 open YearGraphs.Common
 open YearGraphs.Log
@@ -34,13 +35,17 @@ let main (argv: string array) =
                 -> Error "Given file is not an Excel file. Excel files have 'xls' or 'xlsx' extension."
             | fileInfo -> Ok fileInfo
 
-        match excelPath with
-        | Error err ->
-            logError err
+        try
+            match excelPath with
+            | Error err ->
+                logError err
+                1
+            | Ok file ->
+                let nl = Environment.NewLine
+                logDebug ($"Executing application with following parameters:{nl}" +
+                          $"Excel path: {file.FullName}{nl}" +
+                          $"Result directory: {workingDirectory}")
+                ExcelParser.parseExcel file
+        with ex ->
+            logError ex.Message
             1
-        | Ok file ->
-            let nl = Environment.NewLine
-            logDebug ($"Executing application with following parameters:{nl}" +
-                      $"Excel path: {file.FullName}{nl}" +
-                      $"Result directory: {workingDirectory}")
-            0

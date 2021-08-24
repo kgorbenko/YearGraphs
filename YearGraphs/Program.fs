@@ -41,7 +41,6 @@ let main (argv: string array) =
                 logError err
                 1
             | Ok file ->
-                let nl = Environment.NewLine
                 logDebug ("Executing application with following parameters: " +
                           $"Excel path: {file.FullName}; " +
                           $"Result directory: {workingDirectory}.")

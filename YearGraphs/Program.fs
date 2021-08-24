@@ -50,6 +50,21 @@ let main (argv: string array) =
 
                 match summaries with
                 | Ok summaries ->
+                    let writeToFile (summary: Summary): unit =
+                        let summaryText =
+                            (summary.First, summary.Second)
+                            ||> List.zip
+                            |> List.map (fun (x, y) -> $"{x}\t{y}")
+                            |> String.concat Environment.NewLine
+
+                        let path = Path.Combine(workingDirectory, $"{summary.First.Head}.txt")
+                        logInformation $"Writing file {path}"
+
+                        File.WriteAllText(path = path, contents = summaryText)
+
+                    summaries
+                    |> List.iter writeToFile
+
                     0
                 | Error message ->
                     logError message

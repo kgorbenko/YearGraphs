@@ -1,9 +1,9 @@
 ﻿open Argu
 open System
 open System.IO
-open YearGraphs
 open YearGraphs.Arguments
 open YearGraphs.Common
+open YearGraphs.ExcelParser
 open YearGraphs.Log
 
 [<EntryPoint>]
@@ -45,7 +45,15 @@ let main (argv: string array) =
                 logDebug ("Executing application with following parameters: " +
                           $"Excel path: {file.FullName}; " +
                           $"Result directory: {workingDirectory}.")
-                ExcelParser.parseExcel file
+
+                let summaries = parseExcel file
+
+                match summaries with
+                | Ok summaries ->
+                    0
+                | Error message ->
+                    logError message
+                    1
         with ex ->
             logError ex.Message
             1

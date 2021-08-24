@@ -6,6 +6,11 @@ open System.IO
 open YearGraphs.Log
 open YearGraphs.Utils
 
+type Summary = {
+    First: string list
+    Second: string list
+}
+
 let private getSummaryColumnNumbers (worksheet: ExcelWorksheet)
                                     (fileDimensions: ExcelCellAddress * ExcelCellAddress)
                                     : Result<int list, string> =
@@ -50,7 +55,30 @@ let private getSummaryColumnNumbers (worksheet: ExcelWorksheet)
         )
         |> Ok
 
-let parseExcel (excelFile: FileInfo) =
+let private getColumnsByIndex (worksheet: ExcelWorksheet)
+                              (fileDimensions: ExcelCellAddress * ExcelCellAddress)
+                              (columns: int list)
+                              : Summary list =
+    let fileStart, fileEnd = fileDimensions
+
+    let getColumn columnNumber columnHeight =
+        seq {
+            for i in fileStart.Row .. columnHeight do
+                yield worksheet.Cells.[i, columnNumber].Text
+        }
+
+    let firstColumn = getColumn 1 fileEnd.Row |> Seq.toList
+    logDebug $"Extracted first column: {stringifySeq firstColumn}"
+
+    let lastRowIndex = (firstColumn |> Seq.findIndexBack (fun x -> x <> "")) + 1
+    logDebug $"Extracted last row index: {lastRowIndex}"
+
+    columns
+    |> List.map (fun x -> { First = getColumn x lastRowIndex |> Seq.toList
+                            Second = getColumn (x + 1) lastRowIndex |> Seq.toList })
+
+
+let parseExcel (excelFile: FileInfo): Result<Summary list, string> =
     ExcelPackage.LicenseContext <- LicenseContext.NonCommercial
 
     use package = new ExcelPackage(excelFile)
@@ -58,14 +86,14 @@ let parseExcel (excelFile: FileInfo) =
     let fileStart, fileEnd = worksheet.Dimension.Start, worksheet.Dimension.End
     let summaryColumnNumbers = getSummaryColumnNumbers worksheet (fileStart, fileEnd)
 
-    match summaryColumnNumbers with
-    | Error message ->
-        logError message
-        1
-    | Ok summaryColumnNumbers ->
+    summaryColumnNumbers
+    |> Result.bind (fun columnNumbers ->
         let getHeaderValueByIndex index =
-            worksheet.Cells.[fileStart.Row, index].Text
+            worksheet.Cells.[fileStart.Row, index].Text |> int
 
-        let headers = summaryColumnNumbers |> List.map getHeaderValueByIndex
+        let headers = columnNumbers |> List.map getHeaderValueByIndex
         logInformation $"Extracted headers: {stringifySeq headers}"
-        0
+
+        getColumnsByIndex worksheet (fileStart, fileEnd) columnNumbers
+        |> Ok
+    )

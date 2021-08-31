@@ -53,7 +53,7 @@ let main (argv: string array) =
                         let summaryText =
                             (summary.First, summary.Second)
                             ||> List.zip
-                            |> List.map (fun (x, y) -> $"{x}\t{y}")
+                            |> List.map (fun (x, y) -> $"{x}\t{y}".Replace(",", "."))
                             |> String.concat Environment.NewLine
 
                         let path = Path.Combine(workingDirectory, $"{summary.First.Head}.txt")

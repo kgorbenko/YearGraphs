@@ -25,14 +25,12 @@ let private getSummaryColumnNumbers (worksheet: ExcelWorksheet)
     let headerRow = getRow fileStart.Row |> Seq.toList
     logDebug $"Extracted header row: {headerRow |> stringifySeq}"
 
-    let validHeaders = Queue([ 0 .. 10 .. 10 * fileEnd.Column ])
-
     let classifiedValues =
         headerRow
         |> List.map (function
                      | "" -> Ok -1
                      | str when (str |> convertToInt).IsNone -> Error "Invalid character"
-                     | str when validHeaders.Contains (str |> convertToInt).Value -> Ok (str |> convertToInt).Value
+                     | str -> Ok (str |> convertToInt).Value
                      | _ -> Error "Invalid header number")
 
     let invalidValues =
@@ -44,15 +42,9 @@ let private getSummaryColumnNumbers (worksheet: ExcelWorksheet)
     else
         classifiedValues
         |> List.indexed
-        |> List.map (fun (i, x) -> i + 1, x)
-        |> List.choose (function | i, Ok num when num <> -1 -> Some (i, num) | _ -> None)
-        |> List.choose (fun (i, x) ->
-            if validHeaders.Peek() = x then
-                validHeaders.Dequeue() |> ignore
-                Some i
-            else
-                None
-        )
+        |> List.choose (function
+                        | i, Ok num when num <> -1 -> Some (i + 1)
+                        | _ -> None)
         |> Ok
 
 let private getColumnsByIndex (worksheet: ExcelWorksheet)
